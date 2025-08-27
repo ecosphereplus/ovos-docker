@@ -56,6 +56,12 @@ volumes:
   ovos_local_state:
     name: ovos_local_state
     driver: local
+  omva_models:
+    name: omva_models
+    driver: local
+  omva_user_data:
+    name: omva_user_data
+    driver: local
 
 services:
   ovos_messagebus:
@@ -164,6 +170,35 @@ services:
         condition: service_started
     healthcheck:
       test: ["CMD", "pgrep", "-f", "ggwave"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+  ovos_plugin_omva_voiceid:
+    <<: [*podman, *resource-limits]
+    container_name: ovos_plugin_omva_voiceid
+    hostname: ovos_plugin_omva_voiceid
+    restart: unless-stopped
+    image: docker.io/smartgic/ovos-plugin-omva-voiceid:${VERSION}
+    logging: *default-logging
+    pull_policy: ${PULL_POLICY:-always}
+    environment:
+      <<: *audio-environment
+    network_mode: host
+    volumes:
+      - ${OVOS_CONFIG_FOLDER}:/home/${OVOS_USER}/.config/mycroft:ro
+      - ${TMP_FOLDER}:/tmp/mycroft
+      - omva_models:/home/${OVOS_USER}/.local/share/omva/models
+      - omva_user_data:/home/${OVOS_USER}/.local/share/omva/users
+      - /mnt/wslg/:/mnt/wslg/
+    depends_on:
+      ovos_messagebus:
+        condition: service_started
+      ovos_phal:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "omva-voiceid"]
       interval: 30s
       timeout: 10s
       retries: 3

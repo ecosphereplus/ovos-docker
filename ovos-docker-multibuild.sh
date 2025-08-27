@@ -26,7 +26,7 @@ set -Eeuo pipefail
 readonly REGISTRY="docker.io/smartgic"
 readonly PLATFORM="linux/amd64,linux/arm64"
 readonly CONTAINERS=(
-  base sound-base audio cli core gui-websocket listener messagebus phal phal-admin plugin-ggwave 
+  base sound-base audio cli core gui-websocket listener messagebus phal phal-admin plugin-ggwave plugin-omva-voiceid 
 )
 readonly GUIS=(
   gui-original gui-shell

@@ -24,21 +24,22 @@ USER root
 
 SHELL ["/bin/bash", "-c"]
 
-# Install OMVA Voice ID plugin dependencies (the heavy ML libraries)
+# Install OMVA Voice ID plugin dependencies (major version pinning for stability)
 RUN apt-get update \
-  && apt-get install -o Dpkg::Options::="--force-confold" -y --no-install-recommends --no-install-suggests \
+  && apt-get install -y --no-install-recommends \
      build-essential python3-dev \
   && source "/home/${USER}/.venv/bin/activate" \
   && pip install --no-cache-dir \
-     torch torchaudio torchaudio \
-     speechbrain \
-     transformers \
-     numpy scipy scikit-learn \
-     librosa soundfile \
-  && apt-get --purge remove -y build-essential python3-dev \
-  && apt-get --purge autoremove -y \
+     "torch>=2.0,<3.0" \
+     "torchaudio>=2.0,<3.0" \
+     "speechbrain>=1.0,<2.0" \
+     "transformers>=4.0,<5.0" \
+     "librosa>=0.10,<1.0" \
+     "soundfile>=0.12,<1.0" \
+  && pip cache purge \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/* /var/log/{apt,dpkg.log} /tmp/* /var/tmp/* \
+           /home/${USER}/.cache/pip/* /root/.cache/pip/* \
   && mkdir -p "/home/${USER}/.local/share/omva/models" \
   && chown "${USER}:${USER}" -R "/home/${USER}/.local/share/omva"
 

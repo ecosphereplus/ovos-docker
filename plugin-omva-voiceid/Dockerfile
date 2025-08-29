@@ -6,8 +6,6 @@ ARG BUILD_DATE=unknown
 ARG VERSION=unknown
 ARG TAG
 ARG REGISTRY
-ARG TAG
-ARG REGISTRY
 
 LABEL org.opencontainers.image.title="Open Voice OS OCI OMVA Voice ID plugin image"
 LABEL org.opencontainers.image.description="Voice identification plugin using OMVA model for OVOS audio transformers"

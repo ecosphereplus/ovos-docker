@@ -1,8 +1,6 @@
 ---
 x-podman: &podman
   userns_mode: keep-id
-  security_opt:
-    - "label=disable"
 
 x-logging: &default-logging
   driver: json-file
@@ -180,7 +178,7 @@ services:
     container_name: ovos_plugin_omva_voiceid
     hostname: ovos_plugin_omva_voiceid
     restart: unless-stopped
-    image: docker.io/aczire/ovos-plugin-omva-voiceid:${VERSION}
+    image: docker.io/aczire/ovos-plugin-omva-voiceid:${OMVA_VERSION:-alpha}
     logging: *default-logging
     pull_policy: ${PULL_POLICY:-always}
     environment:

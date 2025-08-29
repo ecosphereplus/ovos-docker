@@ -1,9 +1,11 @@
 ARG TAG=0.1.0
-ARG REGISTRY=docker.io/smartgic
-FROM "${REGISTRY}/ovos-sound-base:${TAG}"
+ARG REGISTRY=docker.io/aczire
+FROM "${REGISTRY}/ovos-omva-base:${TAG}"
 
 ARG BUILD_DATE=unknown
 ARG VERSION=unknown
+ARG TAG
+ARG REGISTRY
 ARG TAG
 ARG REGISTRY
 
@@ -16,7 +18,7 @@ LABEL org.opencontainers.image.source="https://github.com/OpenVoiceOS/ovos-docke
 LABEL org.opencontainers.image.vendor="Open Voice OS"
 LABEL org.opencontainers.image.licenses="Apache-2.0"
 LABEL org.opencontainers.image.authors="Open Voice OS Community"
-LABEL org.opencontainers.image.base.name="${REGISTRY}/ovos-sound-base:${TAG}"
+LABEL org.opencontainers.image.base.name="${REGISTRY}/ovos-omva-base:${TAG}"
 
 ARG USER=ovos
 
@@ -24,18 +26,9 @@ USER root
 
 SHELL ["/bin/bash", "-c"]
 
-# Install OMVA Voice ID plugin dependencies and plugin
-RUN apt-get update \
-  && apt-get install -o Dpkg::Options::="--force-confold" -y --no-install-recommends --no-install-suggests \
-     build-essential python3-dev \
-  && source "/home/${USER}/.venv/bin/activate" \
-  && pip install git+https://github.com/ecosphereplus/ovos-audio-transformer-plugin-omva-voiceid.git \
-  && apt-get --purge remove -y build-essential python3-dev \
-  && apt-get --purge autoremove -y \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/* /var/log/{apt,dpkg.log} /tmp/* /var/tmp/* \
-  && mkdir -p "/home/${USER}/.local/share/omva/models" \
-  && chown "${USER}:${USER}" -R "/home/${USER}/.local/share/omva"
+# Install only the OMVA Voice ID plugin (lightweight layer)
+RUN source "/home/${USER}/.venv/bin/activate" \
+  && pip install --no-cache-dir git+https://github.com/ecosphereplus/ovos-audio-transformer-plugin-omva-voiceid.git
 
 USER "$USER"
 

@@ -117,3 +117,9 @@ services:
       - ${OVOS_CONFIG_FOLDER}:/home/${OVOS_USER}/.config/mycroft
       - ovos_nltk:/home/${OVOS_USER}/nltk_data
       - ${TMP_FOLDER}:/tmp/mycroft
+
+  ovos_skill_enroll_user_voice:
+    <<: *skill-base
+    container_name: ovos_skill_enroll_user_voice
+    hostname: ovos_skill_enroll_user_voice
+    image: docker.io/aczire/ovos-skill-enroll-user-voice:${VERSION}
